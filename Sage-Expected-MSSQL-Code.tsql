@@ -1,0 +1,176 @@
+-- =====================================================
+-- Batch 1: Invoice with single line item - ERP CONSULTANCY
+-- =====================================================
+DECLARE @InvoiceId1 INT;
+
+INSERT INTO InvoiceHeader 
+ (InvoiceNumber, InvoiceDateTime, SellerTIN, BuyerTIN, BuyerName, PaymentMethod, SiteId, 
+  GlobalConfigVersion, TaxpayerConfigVersion, TerminalConfigVersion, CreatedAt, UpdatedAt)
+OUTPUT INSERTED.InvoiceId
+VALUES (
+  'INV-2026-0030',                    -- InvoiceNumber
+  '2026-02-24T09:00:00',              -- InvoiceDateTime
+  '20197126',                         -- SellerTIN
+  '',                                 -- BuyerTIN (empty for no buyer)
+  '',                                 -- BuyerName (empty for no buyer)
+  'CARD',                             -- PaymentMethod
+  'LI6aa9a533-7642-4493-9fbc-17975bed6084',  -- SiteId
+  1, 1, 1,                            -- Config versions
+  GETDATE(), GETDATE()
+);
+
+SET @InvoiceId1 = SCOPE_IDENTITY();
+
+INSERT INTO InvoiceLineItems 
+ (InvoiceId, ProductCode, Description, UnitPrice, Quantity, Discount, Total, TotalVAT, TaxRateId, IsProduct, CreatedAt)
+VALUES 
+ (@InvoiceId1, '22028', 'ERP CONSULTANCY', 750.00, 3, 0, 2250.00, 393.75, 'A', 0, GETDATE());
+
+INSERT INTO InvoiceSummary (InvoiceId, TotalVAT, InvoiceTotal, CreatedAt)
+VALUES (@InvoiceId1, 393.75, 2643.75, GETDATE());
+
+INSERT INTO InvoiceTaxBreakdown (InvoiceId, RateId, TaxableAmount, TaxAmount, CreatedAt)
+VALUES (@InvoiceId1, 'A', 2250.00, 393.75, GETDATE());
+
+-- =====================================================
+-- Batch 2: Invoice with single line item - CONSULTANCY SERVICES
+-- =====================================================
+DECLARE @InvoiceId2 INT;
+
+INSERT INTO InvoiceHeader 
+ (InvoiceNumber, InvoiceDateTime, SellerTIN, BuyerTIN, BuyerName, PaymentMethod, SiteId, 
+  GlobalConfigVersion, TaxpayerConfigVersion, TerminalConfigVersion, CreatedAt, UpdatedAt)
+OUTPUT INSERTED.InvoiceId
+VALUES (
+  'INV-2026-0031',                    -- InvoiceNumber
+  '2026-02-24T10:30:00',              -- InvoiceDateTime
+  '20197126',                         -- SellerTIN
+  '',                                 -- BuyerTIN (empty)
+  '',                                 -- BuyerName (empty)
+  'CASH',                             -- PaymentMethod
+  'LI6aa9a533-7642-4493-9fbc-17975bed6084',  -- SiteId
+  1, 1, 1,                            -- Config versions
+  GETDATE(), GETDATE()
+);
+
+SET @InvoiceId2 = SCOPE_IDENTITY();
+
+INSERT INTO InvoiceLineItems 
+ (InvoiceId, ProductCode, Description, UnitPrice, Quantity, Discount, Total, TotalVAT, TaxRateId, IsProduct, CreatedAt)
+VALUES 
+ (@InvoiceId2, '22028', 'CONSULTANCY SERVICES', 425.00, 4, 0, 1700.00, 297.50, 'A', 0, GETDATE());
+
+INSERT INTO InvoiceSummary (InvoiceId, TotalVAT, InvoiceTotal, CreatedAt)
+VALUES (@InvoiceId2, 297.50, 1997.50, GETDATE());
+
+INSERT INTO InvoiceTaxBreakdown (InvoiceId, RateId, TaxableAmount, TaxAmount, CreatedAt)
+VALUES (@InvoiceId2, 'A', 1700.00, 297.50, GETDATE());
+
+-- =====================================================
+-- Batch 3: Invoice with multiple line items - both services
+-- =====================================================
+DECLARE @InvoiceId3 INT;
+
+INSERT INTO InvoiceHeader 
+ (InvoiceNumber, InvoiceDateTime, SellerTIN, BuyerTIN, BuyerName, PaymentMethod, SiteId, 
+  GlobalConfigVersion, TaxpayerConfigVersion, TerminalConfigVersion, CreatedAt, UpdatedAt)
+OUTPUT INSERTED.InvoiceId
+VALUES (
+  'INV-2026-0032',                    -- InvoiceNumber
+  '2026-02-24T13:15:00',              -- InvoiceDateTime
+  '20197126',                         -- SellerTIN
+  '',                                 -- BuyerTIN (empty)
+  '',                                 -- BuyerName (empty)
+  'BANK_TRANSFER',                    -- PaymentMethod
+  'LI6aa9a533-7642-4493-9fbc-17975bed6084',  -- SiteId
+  1, 1, 1,                            -- Config versions
+  GETDATE(), GETDATE()
+);
+
+SET @InvoiceId3 = SCOPE_IDENTITY();
+
+-- Line Item 1: ERP CONSULTANCY
+INSERT INTO InvoiceLineItems 
+ (InvoiceId, ProductCode, Description, UnitPrice, Quantity, Discount, Total, TotalVAT, TaxRateId, IsProduct, CreatedAt)
+VALUES 
+ (@InvoiceId3, '22028', 'ERP CONSULTANCY', 600.00, 2, 0, 1200.00, 210.00, 'A', 0, GETDATE());
+
+-- Line Item 2: CONSULTANCY SERVICES
+INSERT INTO InvoiceLineItems 
+ (InvoiceId, ProductCode, Description, UnitPrice, Quantity, Discount, Total, TotalVAT, TaxRateId, IsProduct, CreatedAt)
+VALUES 
+ (@InvoiceId3, '22028', 'CONSULTANCY SERVICES', 350.00, 3, 0, 1050.00, 183.75, 'A', 0, GETDATE());
+
+INSERT INTO InvoiceSummary (InvoiceId, TotalVAT, InvoiceTotal, CreatedAt)
+VALUES (@InvoiceId3, 393.75, 2643.75, GETDATE());  -- 210 + 183.75 = 393.75, 1200 + 1050 + 393.75 = 2643.75
+
+INSERT INTO InvoiceTaxBreakdown (InvoiceId, RateId, TaxableAmount, TaxAmount, CreatedAt)
+VALUES (@InvoiceId3, 'A', 2250.00, 393.75, GETDATE());  -- 1200 + 1050 = 2250 taxable amount
+
+-- =====================================================
+-- Batch 4: Invoice with higher quantities - ERP CONSULTANCY
+-- =====================================================
+DECLARE @InvoiceId4 INT;
+
+INSERT INTO InvoiceHeader 
+ (InvoiceNumber, InvoiceDateTime, SellerTIN, BuyerTIN, BuyerName, PaymentMethod, SiteId, 
+  GlobalConfigVersion, TaxpayerConfigVersion, TerminalConfigVersion, CreatedAt, UpdatedAt)
+OUTPUT INSERTED.InvoiceId
+VALUES (
+  'INV-2026-0033',                    -- InvoiceNumber
+  '2026-02-24T15:45:00',              -- InvoiceDateTime
+  '20197126',                         -- SellerTIN
+  '',                                 -- BuyerTIN (empty)
+  '',                                 -- BuyerName (empty)
+  'CARD',                             -- PaymentMethod
+  'LI6aa9a533-7642-4493-9fbc-17975bed6084',  -- SiteId
+  1, 1, 1,                            -- Config versions
+  GETDATE(), GETDATE()
+);
+
+SET @InvoiceId4 = SCOPE_IDENTITY();
+
+INSERT INTO InvoiceLineItems 
+ (InvoiceId, ProductCode, Description, UnitPrice, Quantity, Discount, Total, TotalVAT, TaxRateId, IsProduct, CreatedAt)
+VALUES 
+ (@InvoiceId4, '22028', 'ERP CONSULTANCY', 295.00, 10, 0, 2950.00, 516.25, 'A', 0, GETDATE());
+
+INSERT INTO InvoiceSummary (InvoiceId, TotalVAT, InvoiceTotal, CreatedAt)
+VALUES (@InvoiceId4, 516.25, 3466.25, GETDATE());
+
+INSERT INTO InvoiceTaxBreakdown (InvoiceId, RateId, TaxableAmount, TaxAmount, CreatedAt)
+VALUES (@InvoiceId4, 'A', 2950.00, 516.25, GETDATE());
+
+-- =====================================================
+-- Batch 5: Invoice with single high-value item - CONSULTANCY SERVICES
+-- =====================================================
+DECLARE @InvoiceId5 INT;
+
+INSERT INTO InvoiceHeader 
+ (InvoiceNumber, InvoiceDateTime, SellerTIN, BuyerTIN, BuyerName, PaymentMethod, SiteId, 
+  GlobalConfigVersion, TaxpayerConfigVersion, TerminalConfigVersion, CreatedAt, UpdatedAt)
+OUTPUT INSERTED.InvoiceId
+VALUES (
+  'INV-2026-0034',                    -- InvoiceNumber
+  '2026-02-24T16:30:00',              -- InvoiceDateTime
+  '20197126',                         -- SellerTIN
+  '',                                 -- BuyerTIN (empty)
+  '',                                 -- BuyerName (empty)
+  'BANK_TRANSFER',                    -- PaymentMethod
+  'LI6aa9a533-7642-4493-9fbc-17975bed6084',  -- SiteId
+  1, 1, 1,                            -- Config versions
+  GETDATE(), GETDATE()
+);
+
+SET @InvoiceId5 = SCOPE_IDENTITY();
+
+INSERT INTO InvoiceLineItems 
+ (InvoiceId, ProductCode, Description, UnitPrice, Quantity, Discount, Total, TotalVAT, TaxRateId, IsProduct, CreatedAt)
+VALUES 
+ (@InvoiceId5, '22028', 'CONSULTANCY SERVICES', 1250.00, 1, 0, 1250.00, 218.75, 'A', 0, GETDATE());
+
+INSERT INTO InvoiceSummary (InvoiceId, TotalVAT, InvoiceTotal, CreatedAt)
+VALUES (@InvoiceId5, 218.75, 1468.75, GETDATE());
+
+INSERT INTO InvoiceTaxBreakdown (InvoiceId, RateId, TaxableAmount, TaxAmount, CreatedAt)
+VALUES (@InvoiceId5, 'A', 1250.00, 218.75, GETDATE());

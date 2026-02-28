@@ -1,0 +1,24 @@
+I've hidden the Inventory and Demo Invoice modules from the system. The following items have been hidden:
+
+**Hidden Modules:**
+1. **Inventory** - Removed from dashboard sidebar and hidden the inventory page
+2. **Add Inventory** - Removed from:
+   - Dashboard sidebar
+   - Homepage (index.html)
+   - Terminal Setup page
+   - Reports sidebar
+3. **Demo Invoice** - Removed from Reports sidebar
+
+**Kept Visible:**
+- ✅ Terminal Setup
+- ✅ Invoices
+- ✅ Reports
+
+**To Re-enable Later:**
+To unhide these modules, simply remove the HTML comment tags `<!--` and `-->` around the hidden sections in these files:
+- `public/html/dashboard.html` (lines 275-276)
+- `public/html/reports.html` (lines 792-796)
+- `public/html/index.html` (lines 190-196)
+- `public/html/terminal-activation.html` (lines 625-627)
+
+Refresh the browser to see the changes.

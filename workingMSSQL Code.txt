@@ -1,0 +1,47 @@
+DECLARE @InvoiceId1 INT;
+DECLARE @InvoiceNumber VARCHAR(50) = 'INV-2026-7238660'; -- must be unique
+
+BEGIN TRY
+    BEGIN TRANSACTION;
+
+    -- Invoice Header
+    INSERT INTO InvoiceHeader 
+     (InvoiceNumber, InvoiceDateTime, SellerTIN, BuyerTIN, BuyerName, PaymentMethod, SiteId, 
+      GlobalConfigVersion, TaxpayerConfigVersion, TerminalConfigVersion, CreatedAt)
+    OUTPUT INSERTED.InvoiceId
+    VALUES (
+      @InvoiceNumber,
+      '2026-02-24T09:00:00',
+      '20197126',
+      '',
+      '',
+      'CARD',
+      '',
+      1, 1, 1,
+      GETDATE()
+    );
+
+    SET @InvoiceId1 = SCOPE_IDENTITY();
+
+    -- Line Item: Rentals residential, VAT 20.5%
+    INSERT INTO InvoiceLineItems 
+     (InvoiceId, ProductCode, Description, UnitPrice, Quantity, Discount, Total, TotalVAT, TaxRateId, IsProduct, CreatedAt)
+    VALUES 
+     (@InvoiceId1, '22028', 'Rentals residential', 79500000.00, 1, 0, 79500000.00, 20500000.00, 'A', 0, GETDATE());
+
+    -- Invoice Summary
+    INSERT INTO InvoiceSummary (InvoiceId, TotalVAT, InvoiceTotal, CreatedAt)
+    VALUES (@InvoiceId1, 20500000.00, 100000000.00, GETDATE());
+
+    -- Tax Breakdown (20.5% VAT)
+    INSERT INTO InvoiceTaxBreakdown (InvoiceId, RateId, TaxableAmount, TaxAmount, CreatedAt)
+    VALUES (@InvoiceId1, 'A', 79500000.00, 20500000.00, GETDATE());
+
+    COMMIT TRANSACTION;
+    PRINT 'Invoice ' + @InvoiceNumber + ' created successfully';
+
+END TRY
+BEGIN CATCH
+    ROLLBACK;
+    PRINT 'Error: ' + ERROR_MESSAGE();
+END CATCH;

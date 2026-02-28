@@ -1,0 +1,79 @@
+Here's the complete list of API endpoints in the application:
+
+## **Invoice Endpoints**
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/invoices/save` | Save a new invoice |
+| POST | `/api/invoices/submit` | Submit invoice to MRA |
+| GET | `/api/invoices/pending` | Get all pending invoices |
+| GET | `/api/invoices/processed` | Get processed invoices |
+| GET | `/api/invoices/:id` | Get invoice by ID |
+| DELETE | `/api/invoices/:id` | Delete invoice |
+| POST | `/api/invoices/process-pending` | Manually trigger processor |
+| GET | `/api/invoices/submissions` | Get submission history with ValidationURL |
+| GET | `/api/invoices/failed` | Get failed submissions |
+| GET | `/api/invoices/processing-history/:id` | Get processing history |
+| GET | `/api/invoices/stats` | Get invoice statistics |
+| GET | `/api/invoices/submission-history` | Get all submission history |
+| GET | `/api/invoices/submission-stats` | Get submission statistics |
+
+## **Demo Invoice Endpoints (Sage Simulation)**
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/demo-invoices` | Create demo invoice |
+| GET | `/api/demo-invoices` | List all demo invoices |
+
+## **Inventory Endpoints**
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/inventory/save` | Save inventory item |
+| POST | `/api/inventory/upload` | Upload inventory to MRA |
+| GET | `/api/inventory/pending` | Get pending inventory |
+| GET | `/api/inventory/submitted` | Get submitted inventory |
+| GET | `/api/inventory/:id` | Get inventory by ID |
+| DELETE | `/api/inventory/:id` | Delete inventory |
+| GET | `/api/inventory/check-barcode` | Check if barcode exists |
+| POST | `/api/inventory/seed-demo` | Seed demo products |
+| GET | `/api/inventory/failed` | Get failed submissions |
+| POST | `/api/inventory/process-pending` | Manually trigger processor |
+| GET | `/api/inventory/stats` | Get inventory statistics |
+
+## **Terminal Endpoints**
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/terminal/activate` | Activate terminal |
+| GET | `/api/terminal/status` | Get terminal status |
+| GET | `/api/terminal/details` | Get terminal details |
+| GET | `/api/terminal/history` | Get activation history |
+| POST | `/api/terminal/reset` | Reset terminal |
+
+## **Reports Endpoints**
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/reports/invoices` | Get invoice report |
+| GET | `/api/reports/inventory` | Get inventory report |
+| GET | `/api/reports/summary` | Get summary statistics |
+| GET | `/api/reports/failed-invoices` | Get failed invoices |
+| GET | `/api/reports/failed-inventory` | Get failed inventory |
+| POST | `/api/reports/retry-invoice/:id` | Retry failed invoice |
+| GET | `/api/reports/all-submissions` | Get all submissions |
+| GET | `/api/reports/debug` | Debug database |
+
+## **Utility Endpoints**
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/utils/vat-info` | Get VAT information |
+| POST | `/api/utils/calculate-vat` | Calculate VAT |
+| POST | `/api/utils/validate-vat` | Validate VAT number |
+
+## **Health Check**
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/health` | Health check endpoint |
